@@ -1698,6 +1698,7 @@ swbwYMvMzMzMzKwBPNgyMzMzMzNrgP8HnCEC2p4tdlsAAAAASUVORK5CYII=
 <li>The model in the top left with maximum depth = 1 has bigger bias (smaller score). The model is not complex enough. The R2 is around 0.5 and thus the model is not better than the one which predicts a contant mean value.</li>
 <li>The model in the bottom right with maximum depth = 10 has biggest score (almost 1), but suffer from variance. The testing score is much worse than the training score, and adding more training points doesn't help to improve the performance.</li>
 </ul>
+<p>Having more training points would not benefit the model since in the testing score curves have already stablized from 300 points. The performance of the model does not improve as we add more training points.</p>
 
 </div>
 </div>
@@ -2224,7 +2225,7 @@ IoolPmOMMRHFEp8xxpiIYonPGGNMRLHEZ4wxJqL8f4Dw64f2GsEpAAAAAElFTkSuQmCC
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Answer: </strong> My choice is maximum depth = 4, which produces good score slightly under 0.5 and a small variance level (same level as for maximum depth = 2,3)</p>
+<p><strong>Answer: </strong> My choice is maximum depth = 4, which produces good score slightly under 0.9 and a small variance level (same level as for maximum depth = 2,3)</p>
 
 </div>
 </div>
@@ -2282,7 +2283,10 @@ IoolPmOMMRHFEp8xxpiIYonPGGNMRLHEZ4wxJqL8f4Dw64f2GsEpAAAAAElFTkSuQmCC
 <li>for each subset, we use it for testing, and the rest (k-1) subset for training and compute the performance score.</li>
 <li>take the average of the k scores above to have the cross-validation score.</li>
 </ul>
-<p>The cross-validation score can be used as the criteria for the grid search since it is a mesure of the model's performance.</p>
+<p>Benefits of using the k-fold cross-validation:</p>
+<ul>
+<li>The uncertainty (or variance) of the score is reduced (w.r.t when we only use one subset for testing). This is because the testing is done on all the data. In a grid search we select a parameter combinaison that gives best score, so if there is a lot of uncertainty on the score, the grid search can not work well.</li>
+</ul>
 
 </div>
 </div>
@@ -2502,8 +2506,13 @@ Predicted selling price for Client 3&apos;s home: $938,053.85
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Answer: </strong> The predicted prices are consistent with the analysis in the question 1: home with a big number of rooms, in a neighborhood with small poverty level and student-teacher ratio will cost more.</p>
-<p>A look at the houses with highest prices above shows that the price of the Client 3's home is reasonable.</p>
+<p><strong>Answer: </strong> The predicted prices are consistent with the analysis in the question 1: home with a big number of rooms, in a neighborhood with small poverty level and small student-teacher ratio will cost more.</p>
+<p>Following the predictions, client 3's home price is in the high range, client 2's home price is in the low range and the client 1's home price is in the middle range. These are reasonable predictions:</p>
+<ul>
+<li>A look at the highest home prices in the data set shows houses with similar features as Client 3's home and similar prices as the predicted price, so the Client 3's home price prediction seems ok. Following the features statistic printed below, this home stays in a one of the lowest LSTAT neighborhoods (3% - the lowest is 2%, 25% quantile is 7.3%...) and almost the smallest PTRATIO (22). It also has a very big number of rooms = 8 (max neigborhood average is 8.4) ==&gt; the home should have price in the very top range.</li>
+<li>It is less clear for the Client 2's home price by just looking at some lowest home prices in the data set. However the Client 3's home stays within a neighborhood with very high LSTAT (32%) and highest PTRATIO (22), small number of room (4) following the features statistic, so its price should be in the low range as predicted.</li>
+<li>The features of Client 3's home are more or less in the middle range, so the predicted price is not a surprise.</li>
+</ul>
 
 </div>
 </div>
@@ -2621,6 +2630,207 @@ Predicted selling price for Client 3&apos;s home: $938,053.85
 </div>
 
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[42]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;MEDV&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[42]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>RM</th>
+      <th>LSTAT</th>
+      <th>PTRATIO</th>
+      <th>MEDV</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>388</th>
+      <td>5.683</td>
+      <td>22.98</td>
+      <td>20.2</td>
+      <td>105000.0</td>
+    </tr>
+    <tr>
+      <th>381</th>
+      <td>5.453</td>
+      <td>30.59</td>
+      <td>20.2</td>
+      <td>105000.0</td>
+    </tr>
+    <tr>
+      <th>383</th>
+      <td>5.987</td>
+      <td>26.77</td>
+      <td>20.2</td>
+      <td>117600.0</td>
+    </tr>
+    <tr>
+      <th>382</th>
+      <td>5.852</td>
+      <td>29.97</td>
+      <td>20.2</td>
+      <td>132300.0</td>
+    </tr>
+    <tr>
+      <th>472</th>
+      <td>5.414</td>
+      <td>23.97</td>
+      <td>20.1</td>
+      <td>147000.0</td>
+    </tr>
+    <tr>
+      <th>397</th>
+      <td>4.519</td>
+      <td>36.98</td>
+      <td>20.2</td>
+      <td>147000.0</td>
+    </tr>
+    <tr>
+      <th>368</th>
+      <td>5.277</td>
+      <td>30.81</td>
+      <td>20.2</td>
+      <td>151200.0</td>
+    </tr>
+    <tr>
+      <th>384</th>
+      <td>6.343</td>
+      <td>20.32</td>
+      <td>20.2</td>
+      <td>151200.0</td>
+    </tr>
+    <tr>
+      <th>398</th>
+      <td>6.434</td>
+      <td>29.05</td>
+      <td>20.2</td>
+      <td>151200.0</td>
+    </tr>
+    <tr>
+      <th>370</th>
+      <td>5.000</td>
+      <td>31.99</td>
+      <td>20.2</td>
+      <td>155400.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[40]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">features</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[40]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>RM</th>
+      <th>LSTAT</th>
+      <th>PTRATIO</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>489.000000</td>
+      <td>489.000000</td>
+      <td>489.000000</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>6.240288</td>
+      <td>12.939632</td>
+      <td>18.516564</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>0.643650</td>
+      <td>7.081990</td>
+      <td>2.111268</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>3.561000</td>
+      <td>1.980000</td>
+      <td>12.600000</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>5.880000</td>
+      <td>7.370000</td>
+      <td>17.400000</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>6.185000</td>
+      <td>11.690000</td>
+      <td>19.100000</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>6.575000</td>
+      <td>17.120000</td>
+      <td>20.200000</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>8.398000</td>
+      <td>37.970000</td>
+      <td>22.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
@@ -2633,13 +2843,38 @@ Predicted selling price for Client 3&apos;s home: $938,053.85
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">vs</span><span class="o">.</span><span class="n">PredictTrials</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">prices</span><span class="p">,</span> <span class="n">fit_model</span><span class="p">,</span> <span class="n">client_data</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Trial 1: $391,183.33
+Trial 2: $419,700.00
+Trial 3: $415,800.00
+Trial 4: $420,622.22
+Trial 5: $418,377.27
+Trial 6: $411,931.58
+Trial 7: $399,663.16
+Trial 8: $407,232.00
+Trial 9: $351,577.61
+Trial 10: $413,700.00
+
+Range in prices: $69,044.61
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -2666,11 +2901,11 @@ Predicted selling price for Client 3&apos;s home: $938,053.85
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Answer: </strong></p>
+<p><strong>Answer: </strong> The constructed model should not be used in a real-world setting for the following reasons:</p>
 <ul>
 <li>Data that was collected from 1978 is not suitable to be used today, since the real estate market might have evolved since.</li>
 <li>Today some others features not listed above may be important as well (number of bathrooms, garden or not, green area in the neighborhood etc...)</li>
-<li>I have no idea about the robustness of the model...</li>
+<li>According to the sensitivity calculation above, the predicted prices range is nearly 70K, which is rather significant. So the model is not very robust.</li>
 <li>The model trained with data collected in an urban city can not be used to make prediction in a rural city. Real estate price levels are not the same between an urban city (normally much higher) and a rural city. A model trained within one city have no idea about the other (particularly when the two are very different like urban vs rural).</li>
 </ul>
 
